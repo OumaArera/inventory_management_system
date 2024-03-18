@@ -104,6 +104,7 @@ class Categories:
     def update_category(self):
         self.all_categories()  # Call all_categories() to display the categories
 
+        # Check that user has entered a valid id
         while True:
             category_id = input("Enter category ID to update: ")
             if category_id.strip().isdigit():  # Check if the input is a digit
@@ -115,11 +116,13 @@ class Categories:
                     print("Update cancelled!")
                     return
         
+        # Checks that user has entered a valid name
         new_name = input("Enter new name: ")
         if not new_name.strip():
             print("Invalid input! New name cannot be empty.")
             return
 
+        # Tries to update the name and handle exception if any
         try:
             cursor.execute("""UPDATE products_categories
                             SET category_name = ?
