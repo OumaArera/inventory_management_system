@@ -173,7 +173,13 @@ class Customers:
         self.last_name = last_name
 
     def add_customer(self):
-        pass
+        try:
+            cursor.execute("""INSERT INTO customers(first_name, last_name) VALUES(?, ?)""", (self.first_name, self.last_name))
+            self.id= cursor.lastrowid
+            print(f"{self.first_name} {self.last_name} added successfully.")
+
+        except sqlite3.Error as error:
+            print(f"Error adding user: {error}")
 
     def update_customer(self):
         pass
@@ -182,7 +188,17 @@ class Customers:
         pass
 
     def show_all_customers(self):
-        pass
+        try:
+            cursor.execute("""SELECT * FROM customers""")
+            customers = cursor.fetchall()
+            customers_list = []
+
+            for customer in customers:
+                customers_list.append(f"{customer[0]} {customer[1]} {customer[2]}")
+            return "\n".join(customers_list)
+
+        except sqlite3.Error as error:
+            print(f"Error in fetching customers: {error}")
 
     @classmethod
     def input_form(cls):
