@@ -563,7 +563,6 @@ class OrderManagement:
         except sqlite3.Error as err:
             print(f"There was an error deleting the item. Error: {err}")
 
-
     # Fetches data of all the orders
     def orders_report(self):
         try:
@@ -581,6 +580,29 @@ class OrderManagement:
             print(f"There was an error fetching orders. \nError: {err}")
 
 
+    # Fetches data of all the orders
+    def comprehensive_report(self):
+        try:
+            cursor.execute("""SELECT o.id, c.first_name, c.last_name, pcat.category_name, o.product_ordered, 
+                                    o.product_price, o.quantity, o.order_amount, o.order_number, o.order_date, 
+                                    o.order_status
+                             FROM orders o
+                             JOIN customers c ON o.customer_id = c.id
+                             JOIN products p ON o.product_id = p.id
+                             JOIN products_categories pcat ON p.category_id = pcat.id""")
+            report = cursor.fetchall()
+            report_list = []
+
+            for item in report:
+                report_list.append(f"{item[0]}   {item[1]}  {item[2]}  {item[3]}  {item[4]}       {item[5]}   {item[6]}         {item[7]} {item[8]}   {item[9]}   {item[10]}")
+            print(['ID  Name        Category   Item         Price      Qty      Total    Order No.           Time                 Status'])
+            print(report_list)
+
+        except sqlite3.Error as err:
+            print(f"There was an error fetching orders. \nError: {err}")
+
+
+
 def main():
     while True:
         print("\n=== Inventory Management System ===")
@@ -595,7 +617,8 @@ def main():
         print("9. Place Order")
         print("10. Change Order Status")
         print("11. Delete Order")
-        print("12. Exit")
+        print("12. Order Report")
+        print("13. Exit")
 
         choice = input("Enter your choice: ")
 
@@ -644,6 +667,10 @@ def main():
             order_management.delete_order()
 
         elif choice == "12":
+            order_management = OrderManagement()
+            order_management.comprehensive_report()
+
+        elif choice == "13":
             print("Exiting the program...")
             break
 
@@ -653,5 +680,7 @@ def main():
 if __name__ == "__main__":
     main()
     conn.close()
+
+
 
 
